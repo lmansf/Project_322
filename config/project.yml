@@ -24,7 +24,7 @@ regions:
 paths:
   raw_riot: ${var.volume_root}/bronze/riot/raw
   raw_weather: ${var.volume_root}/bronze/weather/raw
-  raw_reddit: ${var.volume_root}/bronze/reddit/raw
+  raw_google_trends: ${var.volume_root}/bronze/google_trends/raw
   checkpoint_root: ${var.volume_root}/_checkpoints
 
 governance:
@@ -33,4 +33,4 @@ governance:
   quality_sla:
     riot_freshness_minutes: 20
     weather_freshness_minutes: 70
-    reddit_freshness_minutes: 45
+    google_trends_freshness_minutes: 1560

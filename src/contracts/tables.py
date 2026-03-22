@@ -7,9 +7,9 @@ BRONZE_TABLES = {
         "bronze_riot_champions_raw",
     ],
     "weather": ["bronze_weather_snapshots_raw"],
-    "reddit": [
-        "bronze_reddit_posts_raw",
-        "bronze_reddit_comments_raw",
+    "google_trends": [
+        "bronze_google_trends_champion_interest_raw",
+        "bronze_google_trends_patch_hype_raw",
     ],
 }
 
@@ -21,9 +21,9 @@ SILVER_TABLES = {
         "silver_riot_champions",
     ],
     "weather": ["silver_weather_region_snapshots"],
-    "reddit": [
-        "silver_reddit_posts_enriched",
-        "silver_reddit_comments_enriched",
+    "google_trends": [
+        "silver_google_trends_champion_interest",
+        "silver_google_trends_patch_hype",
     ],
     "ops": [
         "silver_id_churn_metrics",

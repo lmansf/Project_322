@@ -30,10 +30,10 @@ def test_write_bronze_payloads_json_fallback(tmp_path: Path) -> None:
 def test_write_bronze_payloads_empty_records_noop() -> None:
     run_ts = datetime.now(timezone.utc)
     result = write_bronze_payloads(
-        source_name="reddit",
-        entity_name="comments",
+        source_name="google_trends",
+        entity_name="champion_interest",
         records=[],
-        base_target_path="/Volumes/game_intel_dev/default/lakehouse/bronze/reddit/raw",
+        base_target_path="/Volumes/game_intel_dev/default/lakehouse/bronze/google_trends/raw",
         run_ts=run_ts,
         spark=None,
         prefer_parquet=True,
@@ -45,15 +45,15 @@ def test_write_bronze_payloads_empty_records_noop() -> None:
 
 def test_write_bronze_structured_records_json_fallback(tmp_path: Path) -> None:
     run_ts = datetime(2026, 3, 22, 12, 0, tzinfo=timezone.utc)
-    target_base = str(tmp_path / "bronze" / "reddit" / "retired")
+    target_base = str(tmp_path / "bronze" / "google_trends" / "retired")
     records = [
         {"primary_key": "pk_1", "id": "a1", "retired_date": "2026-03-22"},
         {"primary_key": "pk_2", "id": "a2", "retired_date": "2026-03-22"},
     ]
 
     result = write_bronze_structured_records(
-        source_name="reddit",
-        entity_name="bronze_reddit_post_ids_retired",
+        source_name="google_trends",
+        entity_name="bronze_google_trends_series_ids_retired",
         records=records,
         base_target_path=target_base,
         run_ts=run_ts,

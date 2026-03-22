@@ -1,5 +1,5 @@
 # Databricks notebook source
-"""Gold feature scaffold for player tilt prediction."""
+"""Silver scaffold for Google Trends normalization and momentum features."""
 
 import sys
 from pathlib import Path
@@ -33,14 +33,15 @@ def _ensure_project_root_on_path() -> None:
 
 _ensure_project_root_on_path()
 
-from src.contracts.features import PLAYER_TILT_FEATURES
+from src.contracts.tables import SILVER_TABLES
 
 
 def run() -> dict:
-    """Build feature table at grain summoner_puuid + session_id."""
-    # TODO: Compute rolling loss streak, KDA trend, and session fatigue windows.
-    # TODO: Add Google Trends momentum context and label generation contract.
-    return {"status": "placeholder", "feature_count": len(PLAYER_TILT_FEATURES)}
+    """Normalize trends series and derive momentum-ready entities."""
+    # TODO: Load bronze_google_trends_champion_interest_raw payloads.
+    # TODO: Normalize snapshot timestamps and map regions to NA/EU/KR buckets.
+    # TODO: Build 7-day momentum and patch hype indicators.
+    return {"status": "placeholder", "tables": SILVER_TABLES["google_trends"]}
 
 
 if __name__ == "__main__":

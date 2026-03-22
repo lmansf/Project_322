@@ -13,8 +13,12 @@ MATCH_OUTCOME_FEATURES = [
     "weather_temperature_c",
     "weather_humidity_pct",
     "weather_precipitation_mm",
-    "patch_sentiment_score",
-    "champion_sentiment_score",
+    "champion_search_popularity",
+    "patch_hype_index",
+    "champion_search_momentum_7d",
+    "regional_interest_na",
+    "regional_interest_eu",
+    "regional_interest_kr",
 ]
 
 PLAYER_TILT_FEATURES = [
@@ -23,7 +27,11 @@ PLAYER_TILT_FEATURES = [
     "session_length_minutes",
     "session_game_count",
     "time_of_day_fatigue_index",
-    "patch_sentiment_score",
+    "champion_search_momentum_7d",
+    "patch_hype_index",
+    "regional_interest_na",
+    "regional_interest_eu",
+    "regional_interest_kr",
 ]
 
 MODEL_TARGETS = {

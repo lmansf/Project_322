@@ -1,13 +1,13 @@
 # Player Performance and Environment Intelligence Platform
 
-Databricks Lakehouse scaffold for a cross-domain intelligence platform that blends gameplay, environment, and community sentiment to understand and predict player performance.
+Databricks Lakehouse scaffold for a cross-domain intelligence platform that blends gameplay, environment, and search-interest signals to understand and predict player performance.
 
 ## Why this version is stronger
 - Twitch is intentionally removed to reduce noise and improve explainability.
 - The signal mix is more defensible for performance prediction:
-	- Behavior: Riot gameplay and timelines.
-	- Environment: weather context at match time.
-	- Sentiment: patch and champion community reaction from Reddit.
+  - Behavior: Riot gameplay and timelines.
+  - Environment: weather context at match time.
+  - Demand signal: Google Trends interest around champions and patch cycles.
 
 ## Data domains and sources
 
@@ -25,25 +25,25 @@ Databricks Lakehouse scaffold for a cross-domain intelligence platform that blen
 - Weather condition codes
 - Region-based weather snapshots aligned to match time
 
-### Reddit API
-- Posts from r/leagueoflegends
-- Patch discussions
-- Champion-specific threads
-- Comment-level sentiment and topics (transformer-ready scaffold)
+### Google Trends (PyTrends)
+- Champion search popularity
+- Patch hype index
+- Regional interest patterns (NA, EU, KR)
+- Time-series momentum for forecasting features
 
 ## Ingestion and orchestration
 Databricks Workflows are defined via Databricks Asset Bundles.
 
 - Riot ingestion: every 15 minutes
-- Reddit ingestion: every 30 minutes
 - Weather ingestion: hourly
+- Google Trends ingestion: daily
 
 Workflow definitions:
-- `workflows/jobs/ingestion.yml`
-- `workflows/jobs/medallion.yml`
+- workflows/jobs/ingestion.yml
+- workflows/jobs/medallion.yml
 
 Bundle root:
-- `databricks.yml`
+- databricks.yml
 
 ## Medallion architecture
 
@@ -57,29 +57,29 @@ Landing behavior:
 Idempotency behavior:
 - Riot ingestion keeps a rolling state of seen match ids and only lands unseen matches/timelines.
 - Weather ingestion keeps an hourly cursor and skips if the current hour has already been processed.
-- Reddit ingestion keeps rolling seen post/comment ids and only lands unseen rows.
+- Google Trends ingestion keeps rolling seen time-series keys and only lands unseen trend snapshots.
 - State files are stored under the volume state path at /_state/<source>/idempotency_state.json.
 - When seen-id lists are compacted, pruned ids are archived as retired records with exactly:
-	- primary_key
-	- id
-	- retired_date
+  - primary_key
+  - id
+  - retired_date
 - Newly retired ids are also landed as files under /bronze/<source>/retired in Parquet (Spark) or JSON (local fallback).
 
 Downstream id-churn aggregates:
-- Silver task `id_churn_metrics.py` computes per-source and total metrics for downstream consumption.
+- Silver task notebooks/silver/id_churn_metrics.py computes per-source and total metrics for downstream consumption.
 - Aggregate fields include:
-	- total_active
-	- total_retired
-	- retired_to_active_ratio
-- Aggregates are persisted to parquet (Spark) or JSON fallback at the silver table path for `silver_id_churn_metrics`.
+  - total_active
+  - total_retired
+  - retired_to_active_ratio
+- Aggregates are persisted to parquet (Spark) or JSON fallback at the silver table path for silver_id_churn_metrics.
 
 Tables:
 - bronze_riot_matches_raw
 - bronze_riot_timelines_raw
 - bronze_riot_champions_raw
 - bronze_weather_snapshots_raw
-- bronze_reddit_posts_raw
-- bronze_reddit_comments_raw
+- bronze_google_trends_champion_interest_raw
+- bronze_google_trends_patch_hype_raw
 
 ### Silver
 Cleaned, normalized, and conformed entities.
@@ -93,14 +93,16 @@ Riot:
 Weather:
 - silver_weather_region_snapshots
 
-Reddit:
-- silver_reddit_posts_enriched
-- silver_reddit_comments_enriched
+Google Trends:
+- silver_google_trends_champion_interest
+- silver_google_trends_patch_hype
 
-NLP enrichment columns (scaffold):
-- sentiment_label
-- sentiment_score
-- topic_id
+Derived trend columns (target scaffold):
+- champion_search_momentum_7d
+- patch_hype_index
+- regional_interest_na
+- regional_interest_eu
+- regional_interest_kr
 
 ### Gold
 ML features and analytics products.
@@ -136,102 +138,100 @@ Feature reuse plan:
 ### Meta Evolution dashboard
 - Patch selector
 - Champion pick/ban/win trends
-- Sentiment overlays
+- Search-interest overlays
 
 ### Player Behavior dashboard
 - Tilt risk distribution
 - Session fatigue patterns
 - Region and time-of-day effects
 
-### Sentiment Intelligence dashboard
-- Patch sentiment vs win rate
-- Champion sentiment vs pick rate
-- Toxicity spikes around balance changes
+### Market Signal dashboard
+- Patch hype vs win rate
+- Champion interest vs pick rate
+- Regional search shifts around balance changes
 
 ## Scaffold structure
 
 ```text
 Project_322/
-	config/
-		project.yml
-		sources.yml
-	docs/
-		architecture.md
-		table_catalog.md
-	notebooks/
-		bronze/
-			ingest_riot.py
-			ingest_weather.py
-			ingest_reddit.py
-		silver/
-			riot_conform.py
-			weather_align.py
-			reddit_nlp.py
-		gold/
-			features_match_outcome.py
-			features_player_tilt.py
-			marts_analytics.py
-	src/
-		api_clients/
-			base.py
-			riot_client.py
-			weather_client.py
-			reddit_client.py
-		contracts/
-			tables.py
-			features.py
-		utils/
-			io_paths.py
-			quality.py
-			secrets.py
-	tests/
-		test_contracts.py
-		test_workflows.py
-	workflows/jobs/
-		ingestion.yml
-		medallion.yml
-	databricks.yml
-	requirements.txt
-	readme.md
+  config/
+    project.yml
+    sources.yml
+  docs/
+    architecture.md
+    table_catalog.md
+  notebooks/
+    bronze/
+      ingest_riot.py
+      ingest_weather.py
+      ingest_google_trends.py
+    silver/
+      riot_conform.py
+      weather_align.py
+      google_trends_normalize.py
+      id_churn_metrics.py
+    gold/
+      features_match_outcome.py
+      features_player_tilt.py
+      marts_analytics.py
+  src/
+    api_clients/
+      base.py
+      riot_client.py
+      weather_client.py
+      google_trends_client.py
+    contracts/
+      tables.py
+      features.py
+    utils/
+      io_paths.py
+      quality.py
+      secrets.py
+  tests/
+    test_contracts.py
+    test_workflows.py
+  workflows/jobs/
+    ingestion.yml
+    medallion.yml
+  databricks.yml
+  requirements.txt
+  readme.md
 ```
 
 ## Local validation
 1. Install dependencies:
 
-	 ```powershell
-	 pip install -r requirements.txt
-	 ```
+```powershell
+pip install -r requirements.txt
+```
 
 2. Run tests:
 
-	 ```powershell
-	 pytest
-	 ```
+```powershell
+pytest
+```
 
 ## Databricks quickstart
-- Use the short runbook in `docs/quickstart_databricks.md`.
+- Use docs/quickstart_databricks.md.
 
 ## Secrets wiring
 - Databricks runtime path:
-	- Clients resolve secrets from `dbutils.secrets.get(scope=..., key=...)` first.
-	- Default scope is `kv_databricks_scope`.
+  - Clients resolve secrets from dbutils.secrets.get(scope=..., key=...) first.
+  - Default scope is kv_databricks_scope.
 - Local runtime path:
-	- Clients fall back to environment variables.
-	- Use `config/secrets.example.env` as a template for local setup.
+  - Clients fall back to environment variables.
+  - Use config/secrets.example.env as a template for local setup.
 
 Required secret keys:
-- `riot-api-key`
-- `openweather-api-key`
-- `reddit-client-id`
-- `reddit-client-secret`
+- riot-api-key
+- openweather-api-key
 
 Optional secret key:
-- `reddit-user-agent`
+- google-trends-proxy
 
 ## Implementation roadmap
-- Wire real API clients and auth for Riot, OpenWeather, and Reddit.
-- Implement Bronze raw writers with schema capture and idempotency.
-- Implement Silver conformance and NLP inference jobs.
+- Wire real API clients and auth for Riot and OpenWeather.
+- Implement Google Trends ingestion and normalization jobs.
 - Build Gold features and analytics marts.
 - Add MLflow training/inference pipelines and Feature Store registration.
 - Publish Databricks SQL or Power BI dashboards.

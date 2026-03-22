@@ -5,54 +5,60 @@ resources:
       schedule:
         quartz_cron_expression: "0 */15 * * * ?"
         timezone_id: UTC
-      job_clusters:
-        - job_cluster_key: shared_cluster
-          new_cluster:
-            spark_version: 15.4.x-scala2.12
-            node_type_id: Standard_DS3_v2
-            num_workers: 2
+      environments:
+        - environment_key: default
+          spec:
+            client: "2"
+            dependencies:
+              - pyyaml>=6.0
+              - requests>=2.32.0
+              - pytrends>=4.9.2
       tasks:
         - task_key: ingest_riot
           notebook_task:
             notebook_path: ../../notebooks/bronze/ingest_riot.py
             base_parameters:
               source_name: riot
-          job_cluster_key: shared_cluster
+          environment_key: default
 
     weather_ingestion:
       name: weather_ingestion
       schedule:
         quartz_cron_expression: "0 0 * * * ?"
         timezone_id: UTC
-      job_clusters:
-        - job_cluster_key: shared_cluster
-          new_cluster:
-            spark_version: 15.4.x-scala2.12
-            node_type_id: Standard_DS3_v2
-            num_workers: 2
+      environments:
+        - environment_key: default
+          spec:
+            client: "2"
+            dependencies:
+              - pyyaml>=6.0
+              - requests>=2.32.0
+              - pytrends>=4.9.2
       tasks:
         - task_key: ingest_weather
           notebook_task:
             notebook_path: ../../notebooks/bronze/ingest_weather.py
             base_parameters:
               source_name: weather
-          job_cluster_key: shared_cluster
+          environment_key: default
 
-    reddit_ingestion:
-      name: reddit_ingestion
+    google_trends_ingestion:
+      name: google_trends_ingestion
       schedule:
-        quartz_cron_expression: "0 */30 * * * ?"
+        quartz_cron_expression: "0 15 2 * * ?"
         timezone_id: UTC
-      job_clusters:
-        - job_cluster_key: shared_cluster
-          new_cluster:
-            spark_version: 15.4.x-scala2.12
-            node_type_id: Standard_DS3_v2
-            num_workers: 2
+      environments:
+        - environment_key: default
+          spec:
+            client: "2"
+            dependencies:
+              - pyyaml>=6.0
+              - requests>=2.32.0
+              - pytrends>=4.9.2
       tasks:
-        - task_key: ingest_reddit
+        - task_key: ingest_google_trends
           notebook_task:
-            notebook_path: ../../notebooks/bronze/ingest_reddit.py
+            notebook_path: ../../notebooks/bronze/ingest_google_trends.py
             base_parameters:
-              source_name: reddit
-          job_cluster_key: shared_cluster
+              source_name: google_trends
+          environment_key: default

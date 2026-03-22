@@ -21,14 +21,23 @@ sources:
       max_retries: 5
       backoff_seconds: 2
 
-  reddit:
-    schedule: every_30_minutes
-    subreddit: leagueoflegends
-    endpoints:
-      - /r/leagueoflegends/hot
-      - /r/leagueoflegends/comments/{id}
-    cursor_column: created_utc
-    idempotency_key: reddit_post_id
+  google_trends:
+    schedule: daily
+    provider: pytrends
+    term_groups:
+      champions:
+        - ahri
+        - yasuo
+        - jinx
+      patches:
+        - league of legends patch
+        - lol patch notes
+    geos:
+      - US
+      - DE
+      - KR
+    cursor_column: snapshot_date
+    idempotency_key: trend_series_key
     retry:
       max_retries: 5
       backoff_seconds: 2

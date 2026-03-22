@@ -17,5 +17,5 @@ def test_resolve_secret_raises_when_missing(monkeypatch: pytest.MonkeyPatch) -> 
 
 
 def test_resolve_secret_optional_returns_none(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.delenv("PROJECT322_REDDIT_USER_AGENT", raising=False)
-    assert resolve_secret("reddit-user-agent", required=False) is None
+    monkeypatch.delenv("PROJECT322_GOOGLE_TRENDS_PROXY", raising=False)
+    assert resolve_secret("google-trends-proxy", required=False) is None

@@ -5,13 +5,12 @@
 - bronze_riot_timelines_raw
 - bronze_riot_champions_raw
 - bronze_weather_snapshots_raw
-- bronze_reddit_posts_raw
-- bronze_reddit_comments_raw
+- bronze_google_trends_champion_interest_raw
+- bronze_google_trends_patch_hype_raw
 
 ## Bronze Retired Archives
 - bronze_riot_match_ids_retired
-- bronze_reddit_post_ids_retired
-- bronze_reddit_comment_ids_retired
+- bronze_google_trends_series_ids_retired
 
 ## Silver
 - silver_riot_matches
@@ -19,8 +18,8 @@
 - silver_riot_timeline_events
 - silver_riot_champions
 - silver_weather_region_snapshots
-- silver_reddit_posts_enriched
-- silver_reddit_comments_enriched
+- silver_google_trends_champion_interest
+- silver_google_trends_patch_hype
 - silver_id_churn_metrics
 
 ## Gold ML Features

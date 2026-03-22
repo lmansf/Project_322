@@ -11,13 +11,10 @@ def test_compute_id_churn_aggregates_totals_and_ratio() -> None:
                 {"primary_key": "pk1", "id": "m0", "retired_date": "2026-03-22"},
             ],
         },
-        "reddit": {
-            "seen_post_ids": ["p1"],
-            "seen_comment_ids": ["c1", "c2"],
-            "retired_post_ids": [
+        "google_trends": {
+            "seen_series_ids": ["s1", "s2", "s3"],
+            "retired_series_ids": [
                 {"primary_key": "pk2", "id": "p0", "retired_date": "2026-03-22"},
-            ],
-            "retired_comment_ids": [
                 {"primary_key": "pk3", "id": "c0", "retired_date": "2026-03-22"},
             ],
         },
