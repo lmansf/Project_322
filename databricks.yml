@@ -13,7 +13,7 @@ targets:
     variables:
       catalog: game_intel_dev
       schema: lakehouse
-      volume_root: /Volumes/game_intel_dev/lakehouse
+      volume_root: /Volumes/game_intel_dev/default/lakehouse
 
   prod:
     mode: production
@@ -22,7 +22,7 @@ targets:
     variables:
       catalog: game_intel_prod
       schema: lakehouse
-      volume_root: /Volumes/game_intel_prod/lakehouse
+      volume_root: /Volumes/game_intel_prod/default/lakehouse
 
 variables:
   databricks_host:

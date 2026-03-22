@@ -71,6 +71,7 @@ Downstream id-churn aggregates:
 	- total_active
 	- total_retired
 	- retired_to_active_ratio
+- Aggregates are persisted to parquet (Spark) or JSON fallback at the silver table path for `silver_id_churn_metrics`.
 
 Tables:
 - bronze_riot_matches_raw
@@ -206,6 +207,9 @@ Project_322/
 	 ```powershell
 	 pytest
 	 ```
+
+## Databricks quickstart
+- Use the short runbook in `docs/quickstart_databricks.md`.
 
 ## Secrets wiring
 - Databricks runtime path:

@@ -33,7 +33,7 @@ def test_write_bronze_payloads_empty_records_noop() -> None:
         source_name="reddit",
         entity_name="comments",
         records=[],
-        base_target_path="/Volumes/game_intel_dev/lakehouse/bronze/reddit/raw",
+        base_target_path="/Volumes/game_intel_dev/default/lakehouse/bronze/reddit/raw",
         run_ts=run_ts,
         spark=None,
         prefer_parquet=True,
