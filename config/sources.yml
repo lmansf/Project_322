@@ -1,0 +1,34 @@
+sources:
+  riot:
+    schedule: every_15_minutes
+    endpoints:
+      - /lol/match/v5/matches/{matchId}
+      - /lol/match/v5/matches/{matchId}/timeline
+      - /lol/platform/v3/champion-rotations
+    cursor_column: ingestion_cursor
+    idempotency_key: match_id
+    retry:
+      max_retries: 5
+      backoff_seconds: 2
+
+  weather:
+    schedule: hourly
+    provider: openweather
+    endpoint: /data/2.5/weather
+    cursor_column: snapshot_ts
+    idempotency_key: region_code_snapshot_hour
+    retry:
+      max_retries: 5
+      backoff_seconds: 2
+
+  reddit:
+    schedule: every_30_minutes
+    subreddit: leagueoflegends
+    endpoints:
+      - /r/leagueoflegends/hot
+      - /r/leagueoflegends/comments/{id}
+    cursor_column: created_utc
+    idempotency_key: reddit_post_id
+    retry:
+      max_retries: 5
+      backoff_seconds: 2

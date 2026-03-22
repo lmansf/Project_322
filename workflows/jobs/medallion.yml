@@ -1,0 +1,51 @@
+resources:
+  jobs:
+    medallion_pipeline:
+      name: medallion_pipeline
+      tasks:
+        - task_key: riot_to_silver
+          notebook_task:
+            notebook_path: ./notebooks/silver/riot_conform.py
+          job_cluster_key: shared_cluster
+
+        - task_key: weather_to_silver
+          notebook_task:
+            notebook_path: ./notebooks/silver/weather_align.py
+          job_cluster_key: shared_cluster
+
+        - task_key: reddit_to_silver
+          notebook_task:
+            notebook_path: ./notebooks/silver/reddit_nlp.py
+          job_cluster_key: shared_cluster
+
+        - task_key: gold_match_outcome_features
+          depends_on:
+            - task_key: riot_to_silver
+            - task_key: weather_to_silver
+            - task_key: reddit_to_silver
+          notebook_task:
+            notebook_path: ./notebooks/gold/features_match_outcome.py
+          job_cluster_key: shared_cluster
+
+        - task_key: gold_player_tilt_features
+          depends_on:
+            - task_key: riot_to_silver
+            - task_key: reddit_to_silver
+          notebook_task:
+            notebook_path: ./notebooks/gold/features_player_tilt.py
+          job_cluster_key: shared_cluster
+
+        - task_key: gold_analytics_marts
+          depends_on:
+            - task_key: gold_match_outcome_features
+            - task_key: gold_player_tilt_features
+          notebook_task:
+            notebook_path: ./notebooks/gold/marts_analytics.py
+          job_cluster_key: shared_cluster
+
+  job_clusters:
+    - job_cluster_key: shared_cluster
+      new_cluster:
+        spark_version: 15.4.x-scala2.12
+        node_type_id: Standard_DS3_v2
+        num_workers: 2

@@ -1,0 +1,36 @@
+project:
+  name: player-performance-environment-intelligence
+  domain: gaming-analytics
+
+conventions:
+  table_name_pattern: <layer>_<domain>_<entity>
+  run_id_format: yyyyMMddHHmmss
+  partition_defaults:
+    bronze: [ingest_date]
+    silver: [event_date]
+    gold: [event_date]
+
+regions:
+  - NA
+  - EUW
+  - EUNE
+  - KR
+  - BR
+  - LAN
+  - LAS
+  - OCE
+  - JP
+
+paths:
+  raw_riot: ${var.volume_root}/bronze/riot/raw
+  raw_weather: ${var.volume_root}/bronze/weather/raw
+  raw_reddit: ${var.volume_root}/bronze/reddit/raw
+  checkpoint_root: ${var.volume_root}/_checkpoints
+
+governance:
+  pii_policy: no_direct_pii_storage
+  secrets_scope: kv_databricks_scope
+  quality_sla:
+    riot_freshness_minutes: 20
+    weather_freshness_minutes: 70
+    reddit_freshness_minutes: 45

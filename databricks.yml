@@ -1,0 +1,35 @@
+bundle:
+  name: player-performance-environment-intelligence
+
+include:
+  - workflows/jobs/*.yml
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      host: ${var.databricks_host}
+    variables:
+      catalog: game_intel_dev
+      schema: lakehouse
+      volume_root: /Volumes/game_intel_dev/lakehouse
+
+  prod:
+    mode: production
+    workspace:
+      host: ${var.databricks_host}
+    variables:
+      catalog: game_intel_prod
+      schema: lakehouse
+      volume_root: /Volumes/game_intel_prod/lakehouse
+
+variables:
+  databricks_host:
+    description: Databricks workspace host URL
+  catalog:
+    description: Unity Catalog name
+  schema:
+    description: Unity schema name
+  volume_root:
+    description: Unity Volume root path
