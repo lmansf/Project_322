@@ -25,6 +25,9 @@ SILVER_TABLES = {
         "silver_reddit_posts_enriched",
         "silver_reddit_comments_enriched",
     ],
+    "ops": [
+        "silver_id_churn_metrics",
+    ],
 }
 
 GOLD_TABLES = {

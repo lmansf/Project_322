@@ -18,11 +18,20 @@ resources:
             notebook_path: ./notebooks/silver/reddit_nlp.py
           job_cluster_key: shared_cluster
 
+        - task_key: id_churn_to_silver
+          depends_on:
+            - task_key: riot_to_silver
+            - task_key: reddit_to_silver
+          notebook_task:
+            notebook_path: ./notebooks/silver/id_churn_metrics.py
+          job_cluster_key: shared_cluster
+
         - task_key: gold_match_outcome_features
           depends_on:
             - task_key: riot_to_silver
             - task_key: weather_to_silver
             - task_key: reddit_to_silver
+            - task_key: id_churn_to_silver
           notebook_task:
             notebook_path: ./notebooks/gold/features_match_outcome.py
           job_cluster_key: shared_cluster
@@ -31,6 +40,7 @@ resources:
           depends_on:
             - task_key: riot_to_silver
             - task_key: reddit_to_silver
+            - task_key: id_churn_to_silver
           notebook_task:
             notebook_path: ./notebooks/gold/features_player_tilt.py
           job_cluster_key: shared_cluster

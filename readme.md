@@ -50,6 +50,28 @@ Bundle root:
 ### Bronze
 Immutable raw JSON landing with ingestion metadata.
 
+Landing behavior:
+- If Spark runtime is available (Databricks), Bronze payloads are written as Parquet files.
+- If Spark runtime is not available (local/dev), Bronze payloads fall back to newline-delimited JSON.
+
+Idempotency behavior:
+- Riot ingestion keeps a rolling state of seen match ids and only lands unseen matches/timelines.
+- Weather ingestion keeps an hourly cursor and skips if the current hour has already been processed.
+- Reddit ingestion keeps rolling seen post/comment ids and only lands unseen rows.
+- State files are stored under the volume state path at /_state/<source>/idempotency_state.json.
+- When seen-id lists are compacted, pruned ids are archived as retired records with exactly:
+	- primary_key
+	- id
+	- retired_date
+- Newly retired ids are also landed as files under /bronze/<source>/retired in Parquet (Spark) or JSON (local fallback).
+
+Downstream id-churn aggregates:
+- Silver task `id_churn_metrics.py` computes per-source and total metrics for downstream consumption.
+- Aggregate fields include:
+	- total_active
+	- total_retired
+	- retired_to_active_ratio
+
 Tables:
 - bronze_riot_matches_raw
 - bronze_riot_timelines_raw
@@ -149,12 +171,18 @@ Project_322/
 			features_player_tilt.py
 			marts_analytics.py
 	src/
+		api_clients/
+			base.py
+			riot_client.py
+			weather_client.py
+			reddit_client.py
 		contracts/
 			tables.py
 			features.py
 		utils/
 			io_paths.py
 			quality.py
+			secrets.py
 	tests/
 		test_contracts.py
 		test_workflows.py
@@ -178,6 +206,23 @@ Project_322/
 	 ```powershell
 	 pytest
 	 ```
+
+## Secrets wiring
+- Databricks runtime path:
+	- Clients resolve secrets from `dbutils.secrets.get(scope=..., key=...)` first.
+	- Default scope is `kv_databricks_scope`.
+- Local runtime path:
+	- Clients fall back to environment variables.
+	- Use `config/secrets.example.env` as a template for local setup.
+
+Required secret keys:
+- `riot-api-key`
+- `openweather-api-key`
+- `reddit-client-id`
+- `reddit-client-secret`
+
+Optional secret key:
+- `reddit-user-agent`
 
 ## Implementation roadmap
 - Wire real API clients and auth for Riot, OpenWeather, and Reddit.

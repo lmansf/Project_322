@@ -8,6 +8,11 @@
 - bronze_reddit_posts_raw
 - bronze_reddit_comments_raw
 
+## Bronze Retired Archives
+- bronze_riot_match_ids_retired
+- bronze_reddit_post_ids_retired
+- bronze_reddit_comment_ids_retired
+
 ## Silver
 - silver_riot_matches
 - silver_riot_participants
@@ -16,6 +21,7 @@
 - silver_weather_region_snapshots
 - silver_reddit_posts_enriched
 - silver_reddit_comments_enriched
+- silver_id_churn_metrics
 
 ## Gold ML Features
 - gold_feature_match_outcome (grain: match_id, team_id)
