@@ -1,3 +1,4 @@
+# Databricks notebook source
 """Silver NLP scaffold for Reddit posts and comments."""
 
 from src.contracts.tables import SILVER_TABLES

@@ -1,3 +1,4 @@
+# Databricks notebook source
 """Silver aggregate scaffold for id retirement churn metrics."""
 
 from __future__ import annotations

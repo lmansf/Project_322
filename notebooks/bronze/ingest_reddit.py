@@ -1,3 +1,4 @@
+# Databricks notebook source
 """Bronze ingestion scaffold for Reddit API."""
 
 import os

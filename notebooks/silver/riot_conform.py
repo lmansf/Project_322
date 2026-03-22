@@ -1,3 +1,4 @@
+# Databricks notebook source
 """Silver normalization scaffold for Riot domain tables."""
 
 from src.contracts.tables import SILVER_TABLES

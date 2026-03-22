@@ -1,3 +1,4 @@
+# Databricks notebook source
 """Gold feature scaffold for player tilt prediction."""
 
 from src.contracts.features import PLAYER_TILT_FEATURES

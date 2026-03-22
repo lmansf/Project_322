@@ -1,3 +1,4 @@
+# Databricks notebook source
 """Gold feature scaffold for match outcome prediction."""
 
 from src.contracts.features import MATCH_OUTCOME_FEATURES

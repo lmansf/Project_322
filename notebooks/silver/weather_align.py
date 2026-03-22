@@ -1,3 +1,4 @@
+# Databricks notebook source
 """Silver alignment scaffold for weather context."""
 
 from src.contracts.tables import SILVER_TABLES

@@ -1,3 +1,4 @@
+# Databricks notebook source
 """Bronze ingestion scaffold for OpenWeather API."""
 
 import os

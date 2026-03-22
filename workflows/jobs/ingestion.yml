@@ -5,10 +5,16 @@ resources:
       schedule:
         quartz_cron_expression: "0 */15 * * * ?"
         timezone_id: UTC
+      job_clusters:
+        - job_cluster_key: shared_cluster
+          new_cluster:
+            spark_version: 15.4.x-scala2.12
+            node_type_id: Standard_DS3_v2
+            num_workers: 2
       tasks:
         - task_key: ingest_riot
           notebook_task:
-            notebook_path: ./notebooks/bronze/ingest_riot.py
+            notebook_path: ../../notebooks/bronze/ingest_riot.py
             base_parameters:
               source_name: riot
           job_cluster_key: shared_cluster
@@ -18,10 +24,16 @@ resources:
       schedule:
         quartz_cron_expression: "0 0 * * * ?"
         timezone_id: UTC
+      job_clusters:
+        - job_cluster_key: shared_cluster
+          new_cluster:
+            spark_version: 15.4.x-scala2.12
+            node_type_id: Standard_DS3_v2
+            num_workers: 2
       tasks:
         - task_key: ingest_weather
           notebook_task:
-            notebook_path: ./notebooks/bronze/ingest_weather.py
+            notebook_path: ../../notebooks/bronze/ingest_weather.py
             base_parameters:
               source_name: weather
           job_cluster_key: shared_cluster
@@ -31,17 +43,16 @@ resources:
       schedule:
         quartz_cron_expression: "0 */30 * * * ?"
         timezone_id: UTC
+      job_clusters:
+        - job_cluster_key: shared_cluster
+          new_cluster:
+            spark_version: 15.4.x-scala2.12
+            node_type_id: Standard_DS3_v2
+            num_workers: 2
       tasks:
         - task_key: ingest_reddit
           notebook_task:
-            notebook_path: ./notebooks/bronze/ingest_reddit.py
+            notebook_path: ../../notebooks/bronze/ingest_reddit.py
             base_parameters:
               source_name: reddit
           job_cluster_key: shared_cluster
-
-  job_clusters:
-    - job_cluster_key: shared_cluster
-      new_cluster:
-        spark_version: 15.4.x-scala2.12
-        node_type_id: Standard_DS3_v2
-        num_workers: 2
